@@ -207,7 +207,9 @@ __END__
 		= story.updated_at.strftime('%Y 年 %m 月 %d 日 %H 時 %M 分')
 		にリレーされました
 	%li
-		あと
+		この小説は
+		= story.size
+		段落から構成され、あと
 		= story.size - story.paragraphs.size
 		段落で完結します
 %div.row
