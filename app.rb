@@ -249,8 +249,11 @@ __END__
 		%ul.list-group
 			- @story.characters.each do |character|
 				- if character != @character
+					%form.form-inline{name:"deleteCharacter#{character.id}",method:'POST',action:"/#{@story.id}/characters/#{character.id}"}
+						%input{type:'hidden',name:'_method',value:'DELETE'}
 					%li.list-group-item
 						%strong= character.name
 						= "..."
 						= character.description
+						%a{href:'#',onclick:"document.deleteCharacter#{character.id}.submit()"} 削除
 						%span.badge= count[character.name]
