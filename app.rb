@@ -166,15 +166,15 @@ __END__
 	%div.form-group
 		%label.col-sm-2.control-label{for:'title'} タイトル(35文字)
 		%div.col-sm-10
-			%input.form-control{type:'text',name:'title'}
+			%input.form-control{type:'text',name:'title',value:@story.try(:title)}
 	%div.form-group
 		%label.col-sm-2.control-label{for:'title'} 段落数(10-1000)
 		%div.col-sm-10
-			%input.form-control{type:'number',name:'size'}
+			%input.form-control{type:'number',name:'size',value:@story.try(:size)}
 	%div.form-group
 		%label.col-sm-2.control-label{for:'paragraph'} 書き出し(1000文字)
 		%div.col-sm-10
-			%textarea.form-control{name:'paragraph',rows:10}
+			%textarea.form-control{name:'paragraph',rows:10}= @story.try(:paragraphs).try(:last)
 	%div.form-group
 		%div.col-sm-offset-2.col-sm-10
 			%button.btn.btn-default リレー
