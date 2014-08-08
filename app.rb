@@ -23,7 +23,7 @@ class Character
 	include Mongoid::Timestamps
 	field :name, type: String
 	field :description, type: String
-	validates :name, length: {maximum: 14}, uniqueness: true, presence: true
+	validates :name, length: {maximum: 14}, uniqueness: {scope: :story_id}, presence: true
 	validates :description, length: {maximum: 140}
 	belongs_to :story
 end
