@@ -168,7 +168,7 @@ __END__
 		%div.col-sm-10
 			%input.form-control{type:'text',name:'title'}
 	%div.form-group
-		%label.col-sm-2.control-label{for:'title'} 段落数(10-100)
+		%label.col-sm-2.control-label{for:'title'} 段落数(10-1000)
 		%div.col-sm-10
 			%input.form-control{type:'number',name:'size'}
 	%div.form-group
