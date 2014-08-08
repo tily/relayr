@@ -243,8 +243,9 @@ __END__
 				%button.btn.btn-default.pull-right 追加
 		%ul.list-group
 			- @story.characters.each do |character|
-				%li.list-group-item
-					%strong= character.name
-					= "..."
-					= character.description
-					%span.badge= count[character.name]
+				- if character != @character
+					%li.list-group-item
+						%strong= character.name
+						= "..."
+						= character.description
+						%span.badge= count[character.name]
