@@ -167,15 +167,15 @@ __END__
 			%li= "#{field} #{error}"
 %form.form-horizontal{method:'POST',action:"/"}
 	%div.form-group
-		%label.col-sm-2.control-label{for:'title'} タイトル(35文字)
+		%label.col-sm-2.control-label{for:'title'} タイトル
 		%div.col-sm-10
 			%input.form-control{type:'text',name:'title',value:@story.try(:title)}
 	%div.form-group
-		%label.col-sm-2.control-label{for:'title'} 段落数(10-1000)
+		%label.col-sm-2.control-label{for:'title'} 段落数
 		%div.col-sm-10
 			%input.form-control{type:'number',name:'size',value:@story.try(:size)}
 	%div.form-group
-		%label.col-sm-2.control-label{for:'paragraph'} 書き出し(1000文字)
+		%label.col-sm-2.control-label{for:'paragraph'} 書き出し
 		%div.col-sm-10
 			%textarea.form-control{name:'paragraph',rows:10}= @story.try(:paragraphs).try(:last)
 	%div.form-group
@@ -237,10 +237,10 @@ __END__
 					%li= "#{field} #{error}"
 		%form.form-inline{method:'POST',action:"/#{@story.id}/characters",style:'padding-bottom: 1em'}
 			%div.form-group
-				%label 名前(14文字)
+				%label 名前
 				%input.form-control{name:'name'}
 			%div.form-group
-				%label 説明(140文字)
+				%label 説明
 				%input.form-control{name:'description'}
 			%div.form-group
 				%button.btn.btn-default.pull-right 追加
