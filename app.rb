@@ -164,15 +164,15 @@ __END__
 			%li= "#{field} #{error}"
 %form.form-horizontal{method:'POST',action:"/"}
 	%div.form-group
-		%label.col-sm-2.control-label{for:'title'} タイトル
+		%label.col-sm-2.control-label{for:'title'} タイトル(35文字)
 		%div.col-sm-10
 			%input.form-control{type:'text',name:'title'}
 	%div.form-group
-		%label.col-sm-2.control-label{for:'title'} 段落数
+		%label.col-sm-2.control-label{for:'title'} 段落数(10-100)
 		%div.col-sm-10
 			%input.form-control{type:'number',name:'size'}
 	%div.form-group
-		%label.col-sm-2.control-label{for:'paragraph'} 書き出し
+		%label.col-sm-2.control-label{for:'paragraph'} 書き出し(1000文字)
 		%div.col-sm-10
 			%textarea.form-control{name:'paragraph',rows:10}
 	%div.form-group
