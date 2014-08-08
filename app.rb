@@ -110,7 +110,7 @@ delete '/:id/characters/:character_id' do
 	halt 404 if story.nil?
 	halt 403 if story.finished
 	@character = story.characters.find(params[:character_id])
-	@caracter.destroy
+	@character.destroy
 	redirect "http://#{env['HTTP_HOST']}/#{story.id}"
 end
 
