@@ -8,12 +8,12 @@ class Story
 	field :size, type: Integer
 	field :paragraphs, type: Array
 	field :finished, type: Boolean, default: false
-	validates :title, length: {maximum: 35}, uniqueness: true
-	validates :size, inclusion: {in: 10..1000}
+	validates :title, length: {maximum: 35, message: 'は 35 文字以内で入力してください'}, uniqueness: true
+	validates :size, inclusion: {in: 10..1000, message: 'は 10-1000 で入力してください'}
 	validate do |story|
-		story.errors.add(:paragraphs, "last paragraph is the same as previous paragraph") if story.paragraphs.last == story.paragraphs[-2]
-		story.errors.add(:paragraphs, "last paragraph is empty") if story.paragraphs.last.nil? || story.paragraphs.last == ''
-		story.errors.add(:paragraphs, "last paragraph is too long. maximum is 1000 characters") if story.paragraphs.last.size > 1000
+		story.errors.add(:paragraphs, "の内容が前の段落と同じです") if story.paragraphs.last == story.paragraphs[-2]
+		story.errors.add(:paragraphs, "が入力されていません") if story.paragraphs.last.nil? || story.paragraphs.last == ''
+		story.errors.add(:paragraphs, "は 1000 文字以内で入力してください") if story.paragraphs.last.size > 1000
 	end
 	has_many :characters
 end
@@ -23,8 +23,11 @@ class Character
 	include Mongoid::Timestamps
 	field :name, type: String
 	field :description, type: String
-	validates :name, length: {maximum: 14}, uniqueness: {scope: :story_id}, presence: true
-	validates :description, length: {maximum: 140}
+	validates :name,
+		length: {maximum: 14, message: "は 14 文字以内で入力してください"},
+		uniqueness: {scope: :story_id, message: "は既に存在します"},
+		presence: {message: "が入力されていません"}
+	validates :description, length: {maximum: 140, message: "は 140 文字以内で入力してください"}
 	belongs_to :story
 end
 
