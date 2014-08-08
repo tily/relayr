@@ -240,10 +240,10 @@ __END__
 		%form.form-inline{method:'POST',action:"/#{@story.id}/characters",style:'padding-bottom: 1em'}
 			%div.form-group
 				%label 名前
-				%input.form-control{name:'name'}
+				%input.form-control{name:'name',value:@character.try(:name)}
 			%div.form-group
 				%label 説明
-				%input.form-control{name:'description'}
+				%input.form-control{name:'description',value:@character.try(:description)}
 			%div.form-group
 				%button.btn.btn-default.pull-right 追加
 		%ul.list-group
