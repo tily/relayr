@@ -119,6 +119,8 @@ __END__
 !!! 5
 %html
 	%head
+		%meta{charset: 'utf-8'}/
+		%meta{name:"viewport",content:"width=device-width,initial-scale=1.0"}
 		%title= TITLE
 		%script{src:"http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js",type:"text/javascript"}
 		%link{rel:'stylesheet',href:'http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css'}
