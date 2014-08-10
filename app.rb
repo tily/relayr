@@ -77,7 +77,31 @@ get '/new' do
 	haml :'/new'
 end
 
+get '/travel' do
+	size = params[:size] || 10
+	@count = Hash.new(0)
+	@paragraphs = []
+	@characters = []
+	until @paragraphs.size == size
+		story = Story.all.sample
+		paragraph = story.paragraphs.sample
+		break if @paragraphs.include?(paragraph)
+		@paragraphs << paragraph
+		@characters += story.characters.to_a
+	end
+	@characters.uniq!
+	@paragraphs.each do |paragraph|
+		@characters.each do |character|
+			@count[character.name] += 1 if paragraph.match(/#{character.name}/)
+		end
+	end
+	@paragraphs << 'そして全員死んだ。そういうものだ。'
+	haml :'/:id'
+end
+
 get '/:id' do
+	@paragraphs = story.paragraphs
+	@characters = story.characters
 	halt 404 if story.nil?
 	haml story.finished? ? :'/:id' : :'/:id/relay'
 end
@@ -135,7 +159,8 @@ __END__
 				%a{href:'/'}= TITLE
 				%small
 					- if request.path == '/'
-						%button.btn.btn-default.pull-right{onclick:'window.location.href="/new"'} 小説を書く
+						%button.btn.btn-default.pull-right{onclick:'window.location.href="/new"',style:'margin-left: 0.5em;'} 小説を書く
+						%button.btn.btn-default.pull-right{onclick:'window.location.href="/travel"'} 痙攣的時間旅行
 					- elsif @story
 						&nbsp;
 						= @story.title
@@ -184,17 +209,18 @@ __END__
 			%button.btn.btn-default リレー
 
 @@ /:id
-- if !@story.characters.empty?
+- if !@characters.select {|character| count[character.name] > 0 }.empty?
 	%h2 登場人物
 	%ul.list-group
-		- @story.characters.each do |character|
-			%li.list-group-item
-				%strong= character.name
-				= "..."
-				= character.description
-				%span.badge= count[character.name]
+		- @characters.each do |character|
+			- if count[character.name] > 0
+				%li.list-group-item
+					%strong= character.name
+					= "..."
+					= character.description
+					%span.badge= count[character.name]
 %h2 本文
-- story.paragraphs.each do |paragraph|
+- @paragraphs.each do |paragraph|
 	%p= paragraph
 
 @@ /:id/relay
