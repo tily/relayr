@@ -221,7 +221,7 @@ __END__
 					= "..."
 					= character.description
 					%span.badge= count[character.name]
-%h2 本文
+%h2 本編
 - @paragraphs.each do |paragraph|
 	%p= paragraph
 
