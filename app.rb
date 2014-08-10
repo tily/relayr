@@ -153,7 +153,7 @@ __END__
 			- @unfinished.each do |story|
 				%li
 					%a{href:"/#{story.id}"}= story.title
-					= "#{(story.paragraphs.size.to_f/story.size.to_f*100).floor}%"
+					= "#{(story.paragraphs.size.to_f/story.size.to_f*100).ceil}%"
 	%div.col-sm-6
 		%h2 完結した小説
 		%ul
