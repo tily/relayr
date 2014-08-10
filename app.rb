@@ -161,6 +161,8 @@ __END__
 					- if request.path == '/'
 						%button.btn.btn-default.pull-right{onclick:'window.location.href="/new"',style:'margin-left: 0.5em;'} 小説を書く
 						%button.btn.btn-default.pull-right{onclick:'window.location.href="/travel"'} 痙攣的時間旅行
+					- elsif request.path == '/travel'
+						痙攣的時間旅行
 					- elsif @story
 						&nbsp;
 						= @story.title
