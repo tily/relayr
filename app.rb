@@ -187,7 +187,27 @@ __END__
 			- @finished.each do |story|
 				%li
 					%a{href:"/#{story.id}"}= story.title
-	
+%div.row
+	%div.col-md-6
+		%h2 使い方
+		%ul
+			%li 常に 1 つ前の段落しか読めないリレー小説投稿サイト
+			%li ただし登場人物の一覧だけはいつでも登録・参照可能です
+			%li 小説を書きはじめるときに指定した段落数に達するまで全文は読めません
+	%div.col-md-6
+		%h2 ハッシュタグ
+		%a.twitter-timeline{:href=>"https://twitter.com/hashtag/relayr",:'data-widget-id'=>"500583326185304065"}
+		:javascript
+			!function(d,s,id){
+				var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https'
+				if(!d.getElementById(id)){
+					js=d.createElement(s)
+					js.id=id
+					js.src=p+"://platform.twitter.com/widgets.js"
+					fjs.parentNode.insertBefore(js,fjs)
+				}
+			}(document,"script","twitter-wjs")
+
 @@ /new
 - if @story && !@story.errors.empty?
 	%ul
