@@ -150,7 +150,9 @@ __END__
 		%meta{name:"viewport",content:"width=device-width,initial-scale=1.0"}
 		%title= TITLE
 		%script{src:"http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js",type:"text/javascript"}
+		%script{src:"/taketori.js",type:"text/javascript"}
 		%link{rel:'stylesheet',href:'http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css'}
+		%link{rel:'stylesheet',href:'/taketori.css'}
 		:css
 			a, a:hover { color: red; text-decoration: none; }
 	%body
@@ -231,20 +233,27 @@ __END__
 			%button.btn.btn-default リレー
 
 @@ /:id
-- if !@characters.select {|character| count[character.name] > 0 }.empty?
-	%h2 登場人物
-	%ul.list-group
-		- @characters.each do |character|
-			- if count[character.name] > 0
-				%li.list-group-item
-					%strong= character.name
-					= "..."
-					= character.description
-					%span.badge= count[character.name]
-%h2 本編
-- @paragraphs.each do |paragraph|
-	%p= paragraph
-
+- if params[:direction] == 'vertical'
+	%a{href:"/#{params[:id]}"} 横書き
+	:javascript
+		taketori = (new Taketori()).set({fontFamily:'sans-serif'}).element('#content').toVertical()
+- else
+	%a{href:"/#{params[:id]}?direction=vertical"} 縦書き
+%a#toggle
+%div#content
+	- if !@characters.select {|character| count[character.name] > 0 }.empty?
+		%h2 登場人物
+		%ul.list-group
+			- @characters.each do |character|
+				- if count[character.name] > 0
+					%li.list-group-item
+						%strong= character.name
+						= "..."
+						= character.description
+						%span.badge= count[character.name]
+	%h2 本編
+	- @paragraphs.each do |paragraph|
+		%p= '　' + paragraph
 @@ /:id/relay
 %ul
 	%li
