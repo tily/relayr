@@ -342,9 +342,9 @@ xml.rss :version => "2.0", :"xmlns:atom" => "http://www.w3.org/2005/Atom" do
 				else
 					xml.description story.paragraphs.last
 				end
-				xml.link "http://drugs.herokuapp.com/#{story.id}"
+				xml.link "http://relayr.herokuapp.com/#{story.id}"
 				xml.pubDate story.updated_at.rfc822
-				xml.guid "http://drugs.herokuapp.com/#{story.id}"
+				xml.guid "http://relayr.herokuapp.com/#{story.id}"
 			end
 		end
 	end
