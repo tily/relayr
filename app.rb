@@ -35,6 +35,11 @@ configure do
         set :haml, ugly: true, escape_html: true
         Mongoid.load!("./mongoid.yml")
         TITLE = 'RELAYR'.split(//).join(' ')
+	DESCRIPTION = [
+          "常に 1 つ前の段落しか読めないリレー小説投稿サイト",
+          "ただし登場人物の一覧だけはいつでも登録・参照可能です",
+          "小説を書きはじめるときに指定した段落数に達するまで全文は読めません"
+	]
 end
 
 helpers do
@@ -62,6 +67,12 @@ get '/' do
 	@finished = @stories.select {|story| story.finished }
 	@unfinished = @stories.select {|story| !story.finished }
 	haml :'/'
+end
+
+get '/rss' do
+	content_type 'application/rss+xml; charset=utf8'
+	@stories = Story.desc(:updated_at)
+	builder :'/rss', layout: false
 end
 
 post '/' do
@@ -191,9 +202,8 @@ __END__
 	%div.col-md-6
 		%h2 使い方
 		%ul
-			%li 常に 1 つ前の段落しか読めないリレー小説投稿サイト
-			%li ただし登場人物の一覧だけはいつでも登録・参照可能です
-			%li 小説を書きはじめるときに指定した段落数に達するまで全文は読めません
+			- DESCRIPTION.each do |description|
+				%li= description
 	%div.col-md-6
 		%h2 ハッシュタグ
 		%a.twitter-timeline{:href=>"https://twitter.com/hashtag/relayr",:'data-widget-id'=>"500583326185304065"}
@@ -231,6 +241,7 @@ __END__
 			%button.btn.btn-default リレー
 
 @@ /:id
+%a{href:"/#{params[:id]}?direction=vertical"} 縦書き
 - if !@characters.select {|character| count[character.name] > 0 }.empty?
 	%h2 登場人物
 	%ul.list-group
@@ -244,7 +255,25 @@ __END__
 %h2 本編
 - @paragraphs.each do |paragraph|
 	%p= paragraph
-
+- if params[:direction] == 'vertical'
+	:css
+		html {
+			background: #222;
+		}
+		body {
+			font-family: serif;
+			font-size: 12pt;
+			line-height: 1.66;
+			padding: 2em;
+			-webkit-writing-mode: vertical-rl;
+			writing-mode: vertical-rl;
+			overflow-y: hidden;
+			max-height: 40em;
+			text-align: justify;
+			box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.9);
+			text-orientation: upright;
+			-webkit-text-orientation: upright;
+		}
 @@ /:id/relay
 %ul
 	%li
@@ -289,7 +318,7 @@ __END__
 		%form.form-inline{method:'POST',action:"/#{@story.id}/characters",style:'padding-bottom: 1em'}
 			%div.form-group
 				%label 名前
-				%input.form-control{name:'name',value:@character.try(:name)}
+			 	%input.form-control{name:'name',value:@character.try(:name)}
 			%div.form-group
 				%label 説明
 				%input.form-control{name:'description',value:@character.try(:description)}
@@ -306,3 +335,26 @@ __END__
 						= character.description
 						%a{href:'#',onclick:"document.deleteCharacter#{character.id}.submit()"} 削除
 						%span.badge= count[character.name]
+@@ /rss
+xml.instruct! :xml, :version => '1.0'
+xml.rss :version => "2.0", :"xmlns:atom" => "http://www.w3.org/2005/Atom" do
+	xml.channel do
+		xml.tag! "atom:link", :href => "http://relayr.herokuapp.com/rss", :rel => "self", :type => "application/rss+xml"
+		xml.title "R E L A Y R"
+		xml.description DESCRIPTION.join(' / ')
+		xml.link "http://relayr.herokuapp.com/"
+		@stories.limit(20).each do |story|
+			xml.item do
+				xml.title story.title
+				if story.finished
+					xml.description story.paragraphs.last
+				else
+					xml.description story.paragraphs.join("\n\n")
+				end
+				xml.link "http://drugs.herokuapp.com/#{story.id}"
+				xml.pubDate story.updated_at.rfc822
+				xml.guid "http://drugs.herokuapp.com/#{story.id}"
+			end
+		end
+	end
+end
