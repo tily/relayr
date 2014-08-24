@@ -338,9 +338,9 @@ xml.rss :version => "2.0", :"xmlns:atom" => "http://www.w3.org/2005/Atom" do
 			xml.item do
 				xml.title story.title
 				if story.finished
-					xml.description story.paragraphs.last
-				else
 					xml.description story.paragraphs.join("\n\n")
+				else
+					xml.description story.paragraphs.last
 				end
 				xml.link "http://drugs.herokuapp.com/#{story.id}"
 				xml.pubDate story.updated_at.rfc822
