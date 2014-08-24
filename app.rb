@@ -111,6 +111,7 @@ get '/travel' do
 end
 
 get '/:id' do
+	story = Story.find(params[:id])
 	@paragraphs = story.paragraphs
 	@characters = story.characters
 	halt 404 if story.nil?
