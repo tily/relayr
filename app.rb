@@ -78,7 +78,7 @@ get '/size.txt' do
 			size += paragraph.size
 		end
 	end
-	size
+	size.to_s
 end
 
 get '/rss' do
