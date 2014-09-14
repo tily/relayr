@@ -69,6 +69,18 @@ get '/' do
 	haml :'/'
 end
 
+get '/size.txt' do
+	size = 0
+	@stories = Story.desc(:updated_at)
+	@stories = @stories.select {|story| story.finished } if params[:finished] == 'true'
+	@stories.each do |story|
+		story.paragraphs.each do |paragraph|
+			size += paragraph.size
+		end
+	end
+	size
+end
+
 get '/rss' do
 	content_type 'application/rss+xml; charset=utf8'
 	@stories = Story.desc(:updated_at)
