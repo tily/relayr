@@ -2,6 +2,7 @@
 Bundler.require
 require './models/story.rb'
 require './models/character.rb'
+require './models/paragraph.rb'
 
 configure do
         set :haml, ugly: true, escape_html: true
