@@ -13,5 +13,5 @@ class Story
 		story.errors.add(:paragraphs, "は 1000 文字以内で入力してください") if story.paragraphs.last.size > 1000
 	end
 	has_many :characters
-	has_many :paragraphs, as: :paragraphes
+	has_many :paragraphes
 end
