@@ -96,6 +96,7 @@ put '/:id' do
 	@story = Story.find(params[:id])
 	@story.paragraphes.create!(body: params[:paragraph])
 	@story.finished = true if story.paragraphes.size == story.size
+	@story.updated_at = Time.now
 	if @story.save
 		redirect "http://#{env['HTTP_HOST']}/#{story.id}"
 	else
