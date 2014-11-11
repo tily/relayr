@@ -1,0 +1,60 @@
+%ul
+	%li
+		この小説は
+		= story.created_at.strftime('%Y 年 %m 月 %d 日 %H 時 %M 分')
+		に作成されました
+	%li
+		この小説は
+		= story.updated_at.strftime('%Y 年 %m 月 %d 日 %H 時 %M 分')
+		にリレーされました
+	%li
+		この小説は
+		= story.size
+		段落から構成され、あと
+		= story.size - story.paragraphs.size
+		段落で完結します
+%div.row
+	%div.col-md-6
+		%h2 前の段落
+		%p= @story.errors.empty? ? @story.paragraphs.last : @story.paragraphs[-2]
+	%div.col-md-6
+		%h2 次の段落
+		- if !@story.errors.empty?
+			%ul
+				- @story.errors.each do |field, error|
+					%li= "#{field} #{error}"
+		%form{method:'POST',action:"/#{@story.id}"}
+			%input{type:'hidden',name:'_method',value:'PUT'}
+			%div.form-group
+				%textarea.form-control{name:'paragraph',rows:10}
+					- if !@story.errors.empty?
+						= params[:paragraph]
+			%div.form-group
+				%button.btn.btn-default リレー
+%div.row
+	%div.col-md-12
+		%h2 登場人物
+		- if @character && !@character.errors.empty?
+			%ul
+				- @character.errors.each do |field, error|
+					%li= "#{field} #{error}"
+		%form.form-inline{method:'POST',action:"/#{@story.id}/characters",style:'padding-bottom: 1em'}
+			%div.form-group
+				%label 名前
+				%input.form-control{name:'name',value:@character.try(:name)}
+			%div.form-group
+				%label 説明
+				%input.form-control{name:'description',value:@character.try(:description)}
+			%div.form-group
+				%button.btn.btn-default.pull-right 追加
+		%ul.list-group
+			- @story.characters.each do |character|
+				- if character != @character
+					%form.form-inline{name:"deleteCharacter#{character.id}",method:'POST',action:"/#{@story.id}/characters/#{character.id}"}
+						%input{type:'hidden',name:'_method',value:'DELETE'}
+					%li.list-group-item
+						%strong= character.name
+						= "..."
+						= character.description
+						%a{href:'#',onclick:"document.deleteCharacter#{character.id}.submit()"} 削除
+						%span.badge= count[character.name]

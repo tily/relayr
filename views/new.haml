@@ -1,0 +1,20 @@
+- if @story && !@story.errors.empty?
+	%ul
+		- @story.errors.each do |field, error|
+			%li= "#{field} #{error}"
+%form.form-horizontal{method:'POST',action:"/"}
+	%div.form-group
+		%label.col-sm-2.control-label{for:'title'} タイトル
+		%div.col-sm-10
+			%input.form-control{type:'text',name:'title',value:@story.try(:title)}
+	%div.form-group
+		%label.col-sm-2.control-label{for:'title'} 段落数
+		%div.col-sm-10
+			%input.form-control{type:'number',name:'size',value:@story.try(:size)}
+	%div.form-group
+		%label.col-sm-2.control-label{for:'paragraph'} 書き出し
+		%div.col-sm-10
+			%textarea.form-control{name:'paragraph',rows:10}= @story.try(:paragraphs).try(:last)
+	%div.form-group
+		%div.col-sm-offset-2.col-sm-10
+			%button.btn.btn-default リレー

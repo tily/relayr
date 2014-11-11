@@ -1,0 +1,33 @@
+%div.row
+	%div.col-sm-6
+		%h2 完結していない小説
+		%ul
+			- @unfinished.each do |story|
+				%li
+					%a{href:"/#{story.id}"}= story.title
+					= "#{(story.paragraphs.size.to_f/story.size.to_f*100).ceil}%"
+	%div.col-sm-6
+		%h2 完結した小説
+		%ul
+			- @finished.each do |story|
+				%li
+					%a{href:"/#{story.id}"}= story.title
+%div.row
+	%div.col-md-6
+		%h2 使い方
+		%ul
+			- DESCRIPTION.each do |description|
+				%li= description
+	%div.col-md-6
+		%h2 ハッシュタグ
+		%a.twitter-timeline{:href=>"https://twitter.com/hashtag/relayr",:'data-widget-id'=>"500583326185304065"}
+		:javascript
+			!function(d,s,id){
+				var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https'
+				if(!d.getElementById(id)){
+					js=d.createElement(s)
+					js.id=id
+					js.src=p+"://platform.twitter.com/widgets.js"
+					fjs.parentNode.insertBefore(js,fjs)
+				}
+			}(document,"script","twitter-wjs")

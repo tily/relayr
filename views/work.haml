@@ -1,0 +1,21 @@
+- if params[:direction] == 'vertical'
+	%a{href:"/#{params[:id]}"} 横書き
+	:javascript
+		taketori = (new Taketori()).set({fontFamily:'sans-serif'}).element('#content').toVertical()
+- else
+	%a{href:"/#{params[:id]}?direction=vertical"} 縦書き
+%a#toggle
+%div#content
+	- if !@characters.select {|character| count[character.name] > 0 }.empty?
+		%h2 登場人物
+		%ul.list-group
+			- @characters.each do |character|
+				- if count[character.name] > 0
+					%li.list-group-item
+						%strong= character.name
+						= "..."
+						= character.description
+						%span.badge= count[character.name]
+	%h2 本編
+	- @paragraphs.each do |paragraph|
+		%p= '　' + paragraph
