@@ -22,9 +22,9 @@ helpers do
 
 	def count_characters
 		count = Hash.new(0)
-		story.paragraphs.each do |paragraph|
+		story.paragraphes.each do |paragraph|
 			story.characters.each do |character|
-				count[character.name] += 1 if paragraph.match(/#{character.name}/)
+				count[character.name] += 1 if paragraph.body.match(/#{character.name}/)
 			end
 		end
 		count
@@ -47,8 +47,8 @@ get '/size.txt' do
 	@stories = Story.desc(:updated_at)
 	@stories = @stories.select {|story| story.finished } if params[:finished] == 'true'
 	@stories.each do |story|
-		story.paragraphs.each do |paragraph|
-			size += paragraph.size
+		story.paragraphes.each do |paragraph|
+			size += paragraph.body.size
 		end
 	end
 	size.to_s
@@ -61,7 +61,8 @@ get '/rss' do
 end
 
 post '/' do
-	@story = Story.create(title: params[:title], size: params[:size], paragraphs: [params[:paragraph]])
+	@story = Story.create!(title: params[:title], size: params[:size])
+	@story.paragraphes.create!(body: params[:paragraph])
 	if @story.save
 		redirect "http://#{env['HTTP_HOST']}/#{@story.id}"
 	else
@@ -80,9 +81,9 @@ get '/travel' do
 	@characters = []
 	until @paragraphs.size == size
 		story = Story.all.sample
-		paragraph = story.paragraphs.sample
-		break if @paragraphs.include?(paragraph)
-		@paragraphs << paragraph
+		paragraph = story.paragraphes.sample
+		break if @paragraphs.include?(paragraph.body)
+		@paragraphs << paragraph.body
 		@characters += story.characters.to_a
 	end
 	@characters.uniq!
@@ -97,7 +98,7 @@ end
 
 get '/:id' do
 	story = Story.find(params[:id])
-	@paragraphs = story.paragraphs
+	@paragraphs = story.paragraphes
 	@characters = story.characters
 	halt 404 if story.nil?
 	haml story.finished? ? :work : :relay
@@ -107,8 +108,8 @@ put '/:id' do
 	halt 404 if story.nil?
 	halt 403 if story.finished
 	@story = Story.find(params[:id])
-	@story.paragraphs << params[:paragraph]
-	@story.finished = true if story.paragraphs.size == story.size
+	@story.paragraphes.create!(body: params[:paragraph])
+	@story.finished = true if story.paragraphes.size == story.size
 	if @story.save
 		redirect "http://#{env['HTTP_HOST']}/#{story.id}"
 	else

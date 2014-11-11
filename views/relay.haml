@@ -11,12 +11,12 @@
 		この小説は
 		= story.size
 		段落から構成され、あと
-		= story.size - story.paragraphs.size
+		= story.size - story.paragraphes.size
 		段落で完結します
 %div.row
 	%div.col-md-6
 		%h2 前の段落
-		%p= @story.errors.empty? ? @story.paragraphs.last : @story.paragraphs[-2]
+		%p= @story.errors.empty? ? @story.paragraphes.last.body : @story.paragraphes[-2].body
 	%div.col-md-6
 		%h2 次の段落
 		- if !@story.errors.empty?

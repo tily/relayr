@@ -7,15 +7,15 @@ xml.rss :version => "2.0", :"xmlns:atom" => "http://www.w3.org/2005/Atom" do
 		xml.link "http://relayr.herokuapp.com/"
 		@stories.limit(20).each do |story|
 			xml.item do
-				xml.title "「#{story.title}」第 #{story.paragraphs.size} 話"
+				xml.title "「#{story.title}」第 #{story.paragraphes.size} 話"
 				if story.finished
-					xml.description story.paragraphs.join("\n\n")
+					xml.description story.paragraphes.map {|p| p.body }.join("\n\n")
 				else
-					xml.description story.paragraphs.last
+					xml.description story.paragraphes.last.body
 				end
-				xml.link "http://relayr.herokuapp.com/#{story.id}##{story.paragraphs.size}"
+				xml.link "http://relayr.herokuapp.com/#{story.id}##{story.paragraphes.size}"
 				xml.pubDate story.updated_at.rfc822
-				xml.guid "http://relayr.herokuapp.com/#{story.id}##{story.paragraphs.size}"
+				xml.guid "http://relayr.herokuapp.com/#{story.id}##{story.paragraphes.size}"
 			end
 		end
 	end
