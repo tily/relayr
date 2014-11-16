@@ -9,4 +9,5 @@ class Story
 	validates :size, inclusion: {in: 10..1000, message: 'は 10-1000 で入力してください'}
 	has_many :characters
 	has_many :paragraphes
+	has_many :rules
 end

@@ -1,27 +1,38 @@
-%ul
-	%li
-		この小説は
-		= story.created_at.strftime('%Y 年 %m 月 %d 日 %H 時 %M 分')
-		に作成されました
-	%li
-		この小説は
-		= story.updated_at.strftime('%Y 年 %m 月 %d 日 %H 時 %M 分')
-		にリレーされました
-	%li
-		この小説は
-		= story.size
-		段落から構成され、あと
-		= story.size - story.paragraphes.size
-		段落で完結します
+%div.row
+	%div.col-md-6
+		%ul
+			%li
+				この小説は
+				= story.created_at.strftime('%Y 年 %m 月 %d 日 %H 時 %M 分')
+				に作成されました
+			%li
+				この小説は
+				= story.updated_at.strftime('%Y 年 %m 月 %d 日 %H 時 %M 分')
+				にリレーされました
+			%li
+				この小説は
+				= story.size
+				段落から構成され、あと
+				= story.size - story.paragraphes.size
+				段落で完結します
+	%div.col-md-6
+		- if @story.rules.size > 0
+			%ul
+				%li #{@paragraph ? @story.paragraphes.size: @story.paragraphes.size + 1} 番目の段落を書こうとしています
+				%li
+					下記のルールが設定されています
+					%ul
+						- @story.rules.each do |rule|
+							%li= rule.to_ja
 %div.row
 	%div.col-md-6
 		%h2 前の段落
 		%p= @story.errors.empty? ? @story.paragraphes.last.body : @story.paragraphes[-2].body
 	%div.col-md-6
 		%h2 次の段落
-		- if !@story.errors.empty?
+		- if @paragraph && !@paragraph.errors.empty?
 			%ul
-				- @story.errors.each do |field, error|
+				- @paragraph.errors.each do |field, error|
 					%li= "#{field} #{error}"
 		%form{method:'POST',action:"/#{@story.id}"}
 			%input{type:'hidden',name:'_method',value:'PUT'}

@@ -48,10 +48,18 @@ end
 
 post '/' do
 	@story = Story.create!(title: params[:title], size: params[:size])
-	@story.paragraphes.create!(body: params[:paragraph])
-	if @story.save
+	if params['rules']
+		params['rules'].keys.sort.each do |i|
+			@story.rules.create!(params['rules'][i])
+		end
+	end
+	@paragraph = @story.paragraphes.build(body: params[:paragraph])
+	if @paragraph.save
 		redirect "http://#{env['HTTP_HOST']}/#{@story.id}"
 	else
+		@story.destroy
+		p 'des'
+		p @story
 		haml :new
 	end
 end
@@ -94,10 +102,10 @@ put '/:id' do
 	halt 404 if story.nil?
 	halt 403 if story.finished
 	@story = Story.find(params[:id])
-	@story.paragraphes.create!(body: params[:paragraph])
+	@paragraph = @story.paragraphes.build(body: params[:paragraph])
 	@story.finished = true if story.paragraphes.size == story.size
 	@story.updated_at = Time.now
-	if @story.save
+	if @story.save && @paragraph.save
 		redirect "http://#{env['HTTP_HOST']}/#{story.id}"
 	else
 		haml :relay

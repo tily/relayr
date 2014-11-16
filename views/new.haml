@@ -2,6 +2,10 @@
 	%ul
 		- @story.errors.each do |field, error|
 			%li= "#{field} #{error}"
+- if @paragraph && !@paragraph.errors.empty?
+	%ul
+		- @paragraph.errors.each do |field, error|
+			%li= "#{field} #{error}"
 %form.form-horizontal{method:'POST',action:"/"}
 	%div.form-group
 		%label.col-sm-2.control-label{for:'title'} タイトル
@@ -12,9 +16,101 @@
 		%div.col-sm-10
 			%input.form-control{type:'number',name:'size',value:@story.try(:size)}
 	%div.form-group
+		%label.col-sm-2.control-label{for:'title'} ルール
+		%div.col-sm-10
+			%div#add-rule
+				%div.row
+					%div.col-sm-1
+						%label 対象
+					%div.col-sm-2
+						%select.form-control#target
+							%option{value:"all",selected:true} すべての段落
+							%option{value:"odd"} 奇数の段落
+							%option{value:"even"} 偶数の段落
+							%option{value:"prime"} 素数の段落
+							%option{value:"number"} n 番目の段落
+							%option{value:"multiples of"} n の倍数の段落
+					%div.col-sm-2
+						%input.form-control#target_number{type:'number',style:'display:none',value:1}
+				%div.row{style:'padding-top:0.5em;'}
+					%div.col-sm-1
+						%label 内容
+					%div.col-sm-7
+						%input.form-control#body{type:'text',value:@story.try(:size)}
+					%div.col-sm-3
+						%select.form-control#type
+							%option{value:"free",selected:true} フリーテキスト
+							%option{value:"includes"} を含まなければならない
+							%option{value:"starts with"} で始まらなければならない
+							%option{value:"ends with"} で終わらなければならない
+							%option{value:"regexp"} にマッチしなければならない
+					%div.col-sm-1
+						%button.btn.btn-default#add 追加
+			%div#rules{style:'padding-top:1.0em;'}
+				%ul.list-group
+					- if @story
+						- @story.rules.each_with_index do |rule, i|
+							%li.list-group-item
+								= rule.to_ja
+								%a{href:'#',class:'remove'} 削除	
+								%input{type:'hidden',name:"rules[#{i}][target]",value:rule.target}
+								%input{type:'hidden',name:"rules[#{i}][target_number]",value:rule.target_number}
+								%input{type:'hidden',name:"rules[#{i}][type]",value:rule.type}
+								%input{type:'hidden',name:"rules[#{i}][body]",value:rule.body}
+	%div.form-group
 		%label.col-sm-2.control-label{for:'paragraph'} 書き出し
 		%div.col-sm-10
-			%textarea.form-control{name:'paragraph',rows:10}= @story.try(:paragraphs).try(:last).try(:body)
+			%textarea.form-control{name:'paragraph',rows:10}= @paragraph && @paragraph.body
 	%div.form-group
 		%div.col-sm-offset-2.col-sm-10
 			%button.btn.btn-default リレー
+:coffeescript
+	ruleToJapanese = (target, targetNumber, type, body) ->
+		subject = switch
+			when target == 'all' then 'すべて'
+			when target == 'odd' then '奇数'
+			when target == 'even' then '偶数'
+			when target == 'prime' then '素数'
+			when target == 'number' then targetNumber + '番目'
+			when target == 'multiples of' then targetNumber + 'の倍数'
+		predicate = switch
+			when type == 'free' then body
+			when type == 'starts with' then "「" + body + "」で始まらなければならない"
+			when type == 'ends with' then "「" + body + "」で終わらなければならない"
+			when type == 'includes' then "「" + body + "」を含まなければならない"
+			when type == 'regexp' then "/" + body + "/ にマッチしなければならない"
+		subject + "の段落が" + predicate
+	$("#add-rule #target").change (e)->
+		target = $(e.target).val()
+		if target == 'number' || target == 'multiples of'
+			$('#target_number').show()
+		else
+			$('#target_number').hide()
+	$("#add-rule #add").click (e)->
+		e.preventDefault()
+		target = $("#add-rule #target").val()
+		targetNumber = $("#add-rule #target_number").val()
+		type = $("#add-rule #type").val()
+		body = $("#add-rule #body").val()
+		ruleNumber = $("#rules ul li").size()
+		if ruleNumber > 4
+			return alert "5 個以上のルールを追加することはできません"
+		if !body
+			return alert "内容を入力してください"
+		if body.length > 140
+			return alert "内容は 140 字以内で入力してください"
+		li = $("<li class='list-group-item'>")
+		li.append (ruleNumber + 1)  + ". " + ruleToJapanese(target, targetNumber, type, body)
+		a = $('<a class="remove" href="#">削除</a>')
+		a.click (e)->
+			e.preventDefault()
+			$(e.target).parent().remove()	
+		li.append a
+		li.append $('<input type="hidden" name="rules[' + ruleNumber + '][target]"        value="' + target       + '">')
+		li.append $('<input type="hidden" name="rules[' + ruleNumber + '][target_number]" value="' + targetNumber + '">')
+		li.append $('<input type="hidden" name="rules[' + ruleNumber + '][type]"          value="' + type         + '">')
+		li.append $('<input type="hidden" name="rules[' + ruleNumber + '][body]"          value="' + body         + '">')
+		$("#rules ul").append(li)
+	$('#rules .remove').click (e)->
+		e.preventDefault()
+		$(e.target).parent().remove()	

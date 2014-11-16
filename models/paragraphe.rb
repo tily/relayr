@@ -8,4 +8,12 @@ class Paragraphe
 		uniqueness: {message: "の内容が前の段落と同じです", scope: :story_id}
 	belongs_to :story
 	has_many :characters
+
+	validate do |paragraph|
+		paragraph.story.rules.each do |rule|
+			if rule.target_paragraph?(paragraph)
+				rule.validate_paragraph(paragraph)
+			end
+		end
+	end
 end
