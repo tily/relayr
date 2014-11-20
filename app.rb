@@ -22,7 +22,7 @@ helpers do
 end
 
 get '/' do
-	@stories = Story.desc(:updated_at)
+	@stories = Story.ne(debug: true).desc(:updated_at)
 	@finished = @stories.select {|story| story.finished }
 	@unfinished = @stories.select {|story| !story.finished }
 	haml :top
@@ -42,12 +42,12 @@ end
 
 get '/rss' do
 	content_type 'application/rss+xml; charset=utf8'
-	@stories = Story.desc(:updated_at)
+	@stories = Story.ne(debug: true).desc(:updated_at)
 	builder :'/rss', layout: false
 end
 
 post '/' do
-	@story = Story.create!(title: params[:title], size: params[:size])
+	@story = Story.create!(title: params[:title], size: params[:size], debug: params[:debug] == 'on')
 	if params['rules']
 		params['rules'].keys.sort.each do |i|
 			@story.rules.create!(params['rules'][i])
@@ -75,7 +75,7 @@ get '/travel' do
 	@characters = []
 	until @paragraphs.size == size
 		story = Story.all.sample
-		paragraph = story.paragraphes.sample
+		paragraph = story.paragraphes.to_a.sample
 		break if @paragraphs.include?(paragraph.body)
 		@paragraphs << paragraph.body
 		@characters += story.characters.to_a
@@ -105,10 +105,16 @@ put '/:id' do
 	@paragraph = @story.paragraphes.build(body: params[:paragraph])
 	@story.finished = true if story.paragraphes.size == story.size
 	@story.updated_at = Time.now
-	if @story.save && @paragraph.save
-		redirect "http://#{env['HTTP_HOST']}/#{story.id}"
+	if @story.finished && @story.debug
+		@story.destroy
+		redirect "/"
+
 	else
-		haml :relay
+		if @story.save && @paragraph.save
+			redirect "http://#{env['HTTP_HOST']}/#{story.id}"
+		else
+			haml :relay
+		end
 	end
 end
 
