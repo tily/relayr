@@ -50,12 +50,10 @@
 				- @character.errors.each do |field, error|
 					%li= "#{field} #{error}"
 		%form.form-inline{method:'POST',action:"/#{@story.id}/characters",style:'padding-bottom: 1em'}
-			%div.form-group
-				%label 名前
-				%input.form-control{name:'name',value:@character.try(:name)}
-			%div.form-group
-				%label 説明
-				%input.form-control{name:'description',value:@character.try(:description)}
+			%div.col-sm-3.form-group
+				%input.form-control{name:'name',value:@character.try(:name),placeholder:'名前',style:'width:100%'}
+			%div.col-sm-6.form-group
+				%input.form-control{name:'description',value:@character.try(:description),placeholder:'説明',style:'width:100%'}
 			%div.form-group
 				%button.btn.btn-default.pull-right 追加
 		%ul.list-group
@@ -77,12 +75,10 @@
 									- character.errors.each do |field, error|
 										%li= "#{field} #{error}"
 							%input{type:'hidden',name:'_method',value:'PUT'}
-							%div.form-group
-								%label 名前
-								%input.form-control{name:'name',value:character.try(:name)}
-							%div.form-group
-								%label 説明
-								%input.form-control{name:'description',value:character.try(:description)}
+							%div.col-sm-3.form-group
+								%input.form-control{name:'name',value:character.try(:name),placeholder:'名前',style:'width:100%'}
+							%div.col-sm-6.form-group
+								%input.form-control{name:'description',value:character.try(:description),placeholder:'説明',style:'width:100%'}
 							%div.form-group
 								%button.btn.btn-default.pull-right 更新
 							%a.cancel-edit{href:'#'} キャンセル
