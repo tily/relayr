@@ -67,7 +67,7 @@
 							= "..."
 							= character.description
 							%a.edit{href:'#'} 編集
-							%a{href:'#',onclick:"document.deleteCharacter#{character.id}.submit()"} 削除
+							%a{href:'#',onclick:"if(confirm('本当に削除してもよろしいですか？')){ document.deleteCharacter#{character.id}.submit() }"} 削除
 							%span.badge= count[character.name]
 						%form.edit-character.form-inline{{method:'POST',action:"/#{@story.id}/characters/#{character.id}",style:'padding-bottom: 1em'},edit_character_attr(character)}
 							- if !character.errors.empty?
