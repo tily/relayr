@@ -28,6 +28,7 @@
 	%div.col-md-6
 		%h2 前の段落
 		%p= @story.errors.empty? ? @story.paragraphes.last.body : @story.paragraphes[-2].body
+		%button.btn.btn-default{"type"=>"button","data-toggle"=>"modal","data-target"=>"#inspiration"} インスピレーション
 	%div.col-md-6
 		%h2 次の段落
 		- if @paragraph && !@paragraph.errors.empty?
@@ -82,7 +83,28 @@
 							%div.form-group
 								%button.btn.btn-default.pull-right 更新
 							%a.cancel-edit{href:'#'} キャンセル
+
+%div.modal.fade#inspiration{"tabindex"=>"-1","role"=>"dialog","aria-labelledby"=>"myModalLabel","aria-hidden"=>"true"}
+	%div.modal-dialog
+		%div.modal-content
+			%div.modal-header
+				%button.close{"data-dismiss"=>"modal"}
+					%span{"aria-hidden"=>"true"} &times;
+					%span.sr-only Close
+				%h4.modal-title#myModalLabel インスピレーション
+			%div.modal-body
+				%span.loading ロード中です
+				%div.control.text-center{style:'display: none'}
+					%a.prev{href:'#'} 前
+					%a.next{href:'#'} 次
+			%div.modal-footer
+				%button.btn.btn-default{"data-dismiss"=>"modal"} 閉じる
 :coffeescript
+	i = 0
+	imageUrls = []
+	render = ()->
+		$('#inspiration img').hide()
+		$('#inspiration img').eq(i).show()
 	$(".edit").click (e)->
 		$(e.target).parent().hide()	
 		$(e.target).parent().next().show()
@@ -91,3 +113,22 @@
 		$(e.target).parent().prev().show()
 		$(e.target).parent().hide()	
 		$(e.target).parent().next().show()
+	$('#inspiration').on 'show.bs.modal',  ()->
+		$('#inspiration .loading').show()
+		$('#inspiration .control').hide()
+		$('#inspiration img').hide()
+		$.get '/#{story.id}/image-urls.json', (data)->
+			imageUrls = data
+			imageUrls.forEach (url)->
+				img = $('<img>')
+				img.attr('src', url).attr('style', 'width:100%;display:none;')
+				$('#inspiration .modal-body').append(img)
+				$('#inspiration .loading').hide()
+				$('#inspiration .control').show()
+				render()
+	$('#inspiration .prev').click ()->
+			if i == 0 then i = imageUrls.length-1 else i--
+			render()
+	$('#inspiration .next').click ()->
+			if i == imageUrls.length-1 then i = 0 else i++
+			render()

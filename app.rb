@@ -35,6 +35,19 @@ helpers do
 			{style: 'display: block'}
 		end
 	end
+
+	def text_to_image_urls(text)
+		YahooKeyphraseApi::Config.app_id = ENV['YAHOO_APP_ID']
+		ykp = YahooKeyphraseApi::KeyPhrase.new
+		result = ykp.extract(text)
+		p word = result.keys.sample
+		bing_image = Bing.new(ENV['BING_ACCOUNT_KEY'], 10, 'Image')
+		urls = []
+		bing_image.search(word).first[:Image].each do |image|
+			urls << image[:MediaUrl]
+		end
+		urls
+	end
 end
 
 get '/' do
@@ -112,6 +125,13 @@ get '/:id' do
 	@characters = story.characters
 	halt 404 if story.nil?
 	haml story.finished? ? :work : :relay
+end
+
+get '/:id/image-urls.json' do
+	halt 404 if story.nil?
+	halt 403 if story.finished
+	content_type 'text/json'
+	JSON.pretty_generate text_to_image_urls(story.paragraphes.last.body)
 end
 
 put '/:id' do
