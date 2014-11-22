@@ -19,6 +19,22 @@ helpers do
 	def count
 		@count ||= count_characters
 	end
+
+	def character_attr(character)
+		if character.errors.empty?
+			{style: 'display: block'}
+		else
+			{style: 'display: none'}
+		end
+	end
+
+	def edit_character_attr(character)
+		if character.errors.empty?
+			{style: 'display: none'}
+		else
+			{style: 'display: block'}
+		end
+	end
 end
 
 get '/' do
@@ -123,6 +139,17 @@ post '/:id/characters' do
 	halt 403 if story.finished
 	@character = story.characters.create params.slice('name', 'description')
 	if @character.save
+		redirect "http://#{env['HTTP_HOST']}/#{story.id}"
+	else
+		haml :relay
+	end
+end
+
+put '/:id/characters/:character_id' do
+	halt 404 if story.nil?
+	halt 403 if story.finished
+	character = story.characters.find(params[:character_id])
+	if character.update(params.slice('name', 'description'))
 		redirect "http://#{env['HTTP_HOST']}/#{story.id}"
 	else
 		haml :relay

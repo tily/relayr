@@ -64,8 +64,34 @@
 					%form.form-inline{name:"deleteCharacter#{character.id}",method:'POST',action:"/#{@story.id}/characters/#{character.id}"}
 						%input{type:'hidden',name:'_method',value:'DELETE'}
 					%li.list-group-item
-						%strong= character.name
-						= "..."
-						= character.description
-						%a{href:'#',onclick:"document.deleteCharacter#{character.id}.submit()"} 削除
-						%span.badge= count[character.name]
+						%span.character{character_attr(character)}
+							%strong= character.name
+							= "..."
+							= character.description
+							%a.edit{href:'#'} 編集
+							%a{href:'#',onclick:"document.deleteCharacter#{character.id}.submit()"} 削除
+							%span.badge= count[character.name]
+						%form.edit-character.form-inline{{method:'POST',action:"/#{@story.id}/characters/#{character.id}",style:'padding-bottom: 1em'},edit_character_attr(character)}
+							- if !character.errors.empty?
+								%ul
+									- character.errors.each do |field, error|
+										%li= "#{field} #{error}"
+							%input{type:'hidden',name:'_method',value:'PUT'}
+							%div.form-group
+								%label 名前
+								%input.form-control{name:'name',value:character.try(:name)}
+							%div.form-group
+								%label 説明
+								%input.form-control{name:'description',value:character.try(:description)}
+							%div.form-group
+								%button.btn.btn-default.pull-right 更新
+							%a.cancel-edit{href:'#'} キャンセル
+:coffeescript
+	$(".edit").click (e)->
+		$(e.target).parent().hide()	
+		$(e.target).parent().next().show()
+	$(".cancel-edit").click (e)->
+		$(e.target).parent().hide()	
+		$(e.target).parent().prev().show()
+		$(e.target).parent().hide()	
+		$(e.target).parent().next().show()
