@@ -75,18 +75,18 @@ get '/travel' do
 	@characters = []
 	until @paragraphs.size == size
 		story = Story.all.sample
-		paragraph = story.paragraphes.to_a.sample
-		break if @paragraphs.include?(paragraph.body)
-		@paragraphs << paragraph.body
+		paragraph = story.paragraphes.sample
+		break if paragraph.nil? || @paragraphs.include?(paragraph)
+		@paragraphs << paragraph
 		@characters += story.characters.to_a
 	end
 	@characters.uniq!
 	@paragraphs.each do |paragraph|
 		@characters.each do |character|
-			@count[character.name] += 1 if paragraph.match(/#{character.name}/)
+			@count[character.name] += 1 if paragraph.body.match(/#{character.name}/)
 		end
 	end
-	@paragraphs << 'そして全員死んだ。そういうものだ。'
+	@paragraphs << Paragraphe.new(body: 'そして全員死んだ。そういうものだ。')
 	haml :work
 end
 
