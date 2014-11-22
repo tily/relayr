@@ -114,6 +114,7 @@
 		$(e.target).parent().hide()	
 		$(e.target).parent().next().show()
 	$('#inspiration').on 'show.bs.modal',  ()->
+		imageUrls = []
 		$('#inspiration .loading').show()
 		$('#inspiration .control').hide()
 		$('#inspiration img').hide()
