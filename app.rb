@@ -10,7 +10,7 @@ helpers do
 		count = Hash.new(0)
 		story.paragraphes.each do |paragraph|
 			story.characters.each do |character|
-				count[character.name] += 1 if paragraph.body.match(/#{character.name}/)
+				count[character.name] += 1 if paragraph.body.match(/#{Regexp.escape(character.name)}/)
 			end
 		end
 		count
