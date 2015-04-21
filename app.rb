@@ -1,5 +1,6 @@
 # coding: utf-8
 require './config.rb'
+require './api.rb'
 
 helpers do
 	def story
