@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 gem 'mongoid'
 gem 'sinatra'
+gem 'sinatra-contrib'
 gem 'haml'
 gem 'mongoid_auto_increment_id', "0.6.5"
 gem 'coffee-script'
@@ -9,4 +10,5 @@ gem 'yahoo_keyphrase_api'
 gem 'carte-server'
 group :development do
 	gem 'shotgun'
+	gem 'rspec'
 end
