@@ -11,4 +11,5 @@ gem 'carte-server'
 group :development do
 	gem 'shotgun'
 	gem 'rspec'
+	gem 'rake'
 end

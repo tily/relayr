@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "carte-client": "0.0.9",
+    "carte-client": "0.0.10",
     "coffee-reactify": "^3.0.0",
     "coffee-script": "^1.9.2",
     "convert-source-map": "^1.1.0",
