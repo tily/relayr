@@ -10,7 +10,7 @@ class Rule
 	field :target_number, type: Integer
 
 	validates :type,
-		inclusion: {in: ["free", "starts with", "includes", "ends with", "regexp"]}
+		inclusion: {in: ["free", "starts with", "includes", "not include", "ends with", "regexp"]}
 	validates :body,
 		length: {maximum: 140, message: "は 140 文字以内で入力してください"},
 		presence: {message: "が入力されていません"}
@@ -34,6 +34,7 @@ class Rule
 			when 'free'; body
 			when 'starts with'; "「#{body}」で始まらなければならない"
 			when 'includes'; "「#{body}」を含まなければならない"
+			when 'not include'; "「#{body}」を含んではならない"
 			when 'ends with'; "「#{body}」で終わらなければならない"
 			when 'regexp'; "/#{body}/ にマッチしなければならない" 
 		end
@@ -58,6 +59,10 @@ class Rule
 			end
 		when 'includes'
 			if !paragraph.body[/#{self.body}/]
+				paragraph.errors.add(:body, self.to_ja)
+			end
+		when 'not includes'
+			if paragraph.body[/#{self.body}/]
 				paragraph.errors.add(:body, self.to_ja)
 			end
 		when 'ends with'

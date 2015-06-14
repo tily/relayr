@@ -41,6 +41,7 @@
 						%select.form-control#type
 							%option{value:"free",selected:true} フリーテキスト
 							%option{value:"includes"} を含まなければならない
+							%option{value:"not include"} を含んではならない
 							%option{value:"starts with"} で始まらなければならない
 							%option{value:"ends with"} で終わらなければならない
 							%option{value:"regexp"} にマッチしなければならない
@@ -82,6 +83,7 @@
 			when type == 'starts with' then "「" + body + "」で始まらなければならない"
 			when type == 'ends with' then "「" + body + "」で終わらなければならない"
 			when type == 'includes' then "「" + body + "」を含まなければならない"
+			when type == 'not include' then "「" + body + "」を含んではならない"
 			when type == 'regexp' then "/" + body + "/ にマッチしなければならない"
 		subject + "の段落が" + predicate
 	$("#add-rule #target").change (e)->
