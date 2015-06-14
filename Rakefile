@@ -1,4 +1,3 @@
-require 'carte/server/tasks'
 require './config.rb'
 
 desc 'new_paragraph_schema'

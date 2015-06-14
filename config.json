@@ -1,9 +1,0 @@
-{
-  "title": "R E L A Y R : : C A R D S",
-  "description": "Relayr Cards",
-  "public_folder": "public",
-  "script_path": "public/app.js",
-  "link_color": "red",
-  "icon_link": "http://relayr.herokuapp.com",
-  "api_path": "/cards"
-}
