@@ -1,3 +1,4 @@
+# coding: utf-8
 class Paragraphe
 	include Mongoid::Document
 	include Mongoid::Timestamps

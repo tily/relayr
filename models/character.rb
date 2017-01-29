@@ -1,3 +1,4 @@
+# coding: utf-8
 class Character
 	include Mongoid::Document
 	include Mongoid::Timestamps
